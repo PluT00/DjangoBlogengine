@@ -1,0 +1,1 @@
+Before the start use: cp settings.py{.example,} 

@@ -1,1 +1,1 @@
-Before the start use: cp settings.py{.example,} 
+Before the start use: cp app/blogengine/blogengine/settings.py{.example,}

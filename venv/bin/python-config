@@ -1,4 +1,4 @@
-#!/home/valera/dj-blog/venv/bin/python
+#!/home/valeara1/dj-blog/venv/bin/python
 
 import sys
 import getopt

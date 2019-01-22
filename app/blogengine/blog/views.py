@@ -18,10 +18,10 @@ def posts_list(request):
     search_query = request.GET.get('search', '')
 
     if search_query:
-        posts = Post.objects.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
+        posts = Post.objects.filter(
+            Q(title__icontains=search_query) | Q(body__icontains=search_query))
     else:
         posts = Post.objects.all()
-
 
     paginator = Paginator(posts, 5)
 
@@ -71,7 +71,7 @@ class PostUpdate(LoginRequiredMixin, ObjectUpdateMixin, View):
 class PostDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
     model = Post
     template = 'blog/post_delete.html'
-    urll = 'post_delete_url'
+    urll = 'posts_list_url'
     raise_exception = True
 
 
@@ -101,5 +101,5 @@ class TagUpdate(LoginRequiredMixin, ObjectUpdateMixin, View):
 class TagDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
     model = Tag
     template = 'blog/tag_delete.html'
-    urll = 'tag_delete_url'
+    urll = 'tags_list_url'
     raise_exception = True

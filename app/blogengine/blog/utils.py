@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from .models import *
+from transliterate import translit
+from django.utils.text import slugify
 
 
 class ObjectDetailsMixin:
@@ -12,7 +14,9 @@ class ObjectDetailsMixin:
 
     def get(self, request, slug):
         obj = get_object_or_404(self.model, slug__iexact = slug)
-        return render(request, self.template, context={self.model.__name__.lower(): obj, 'admin_object': obj, 'detail': True})
+        return render(request, self.template, context={
+        self.model.__name__.lower(): obj, 'admin_object': obj, 'detail': True
+        })
 
 
 class ObjectCreateMixin:
@@ -39,7 +43,9 @@ class ObjectUpdateMixin:
     def get(self, request, slug):
         obj=self.model.objects.get(slug__iexact=slug)
         bound_form=self.model_form(instance=obj)
-        return render(request, self.template, context={'form': bound_form, self.model.__name__.lower(): obj})
+        return render(request, self.template, context={
+        'form': bound_form, self.model.__name__.lower(): obj
+        })
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
@@ -48,7 +54,9 @@ class ObjectUpdateMixin:
         if bound_form.is_valid():
             new_obj = bound_form.save()
             return redirect(new_obj)
-        return render(request, self.template, context={'form': bound_form, self.model.__name__.lower(): obj})
+        return render(request, self.template, context={
+        'form': bound_form, self.model.__name__.lower(): obj
+        })
 
 
 class ObjectDeleteMixin:
@@ -58,9 +66,44 @@ class ObjectDeleteMixin:
 
     def get(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
-        return render(request, self.template, context={self.model.__name__.lower(): obj})
+        return render(request, self.template, context={
+        self.model.__name__.lower(): obj
+        })
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
         obj.delete()
         return redirect(reverse(self.urll))
+
+
+def gen_slug(s):
+    try:
+        slugifyed_title = slugify(s, allow_unicode=True)
+        new_slug = translit(slugifyed_title, reversed=True)
+        return new_slug + '-' + str(int(time()))
+    except:
+        new_slug = slugify(s, allow_unicode=True)
+        return new_slug + '-' + str(int(time()))
+
+
+class ObjectMixin:
+    details_url = None
+    update_url = None
+    delete_url = None
+
+    def get_absolute_url(self):
+        return reverse(self.details_url, kwargs={'slug': self.slug})
+
+    def get_update_url(self):
+        return reverse(self.update_url, kwargs={'slug': self.slug})
+
+    def get_delete_url(self):
+        return reverse(self.delete_url, kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = gen_slug(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title

@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from .models import *
 from transliterate import translit
+from transliterate.exceptions import LanguageDetectionError
 from django.utils.text import slugify
 
 
@@ -41,7 +42,7 @@ class ObjectUpdateMixin:
     template = None
 
     def get(self, request, slug):
-        obj=self.model.objects.get(slug__iexact=slug)
+        obj=get_object_or_404(self.model, slug__iexact=slug)
         bound_form=self.model_form(instance=obj)
         return render(request, self.template, context={
         'form': bound_form, self.model.__name__.lower(): obj
@@ -65,7 +66,7 @@ class ObjectDeleteMixin:
     urll = None
 
     def get(self, request, slug):
-        obj = self.model.objects.get(slug__iexact=slug)
+        obj = get_object_or_404(self.model, slug__iexact=slug)
         return render(request, self.template, context={
         self.model.__name__.lower(): obj
         })
@@ -80,10 +81,9 @@ def gen_slug(s):
     try:
         slugifyed_title = slugify(s, allow_unicode=True)
         new_slug = translit(slugifyed_title, reversed=True)
-        return new_slug + '-' + str(int(time()))
-    except:
+    except LanguageDetectionError:
         new_slug = slugify(s, allow_unicode=True)
-        return new_slug + '-' + str(int(time()))
+    return new_slug + '-' + str(int(time()))
 
 
 class ObjectMixin:

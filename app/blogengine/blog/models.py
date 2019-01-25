@@ -9,10 +9,10 @@ from transliterate import translit
 
 
 class Post(ObjectMixin, models.Model):
-    title = models.CharField(max_length=150, db_index=True)
+    title = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(max_length=150, unique=True)
     body = models.TextField(blank=True, db_index=True)
-    date_pub = models.DateTimeField(auto_now_add = True)
+    date_pub = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
 
     details_url = 'post_details_url'
@@ -25,7 +25,7 @@ class Post(ObjectMixin, models.Model):
 
 class Tag(ObjectMixin, models.Model):
     title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, blank=True, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
 
     details_url = 'tag_details_url'
     update_url = 'tag_update_url'

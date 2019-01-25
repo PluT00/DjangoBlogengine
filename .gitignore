@@ -3,3 +3,4 @@ app/blogengine/blogengine/settings.py
 app/blogengine/db.sqlite3
 app/blogengine/blog/__pycache__
 app/blogengine/blogengine/__pycache__
+app/blogengine/blog/tests/__pycache__

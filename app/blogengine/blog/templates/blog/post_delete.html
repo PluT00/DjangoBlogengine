@@ -10,7 +10,7 @@
     {% csrf_token %}
 
     <h3>Do you want to delete <b>{{ post.title|title }}</b> post?</h3>
-    <a href="{{ post.get_absolute_url }}">Cancel</a>
+    <a href="{{ post.get_absolute_url }}" class="btn btn-light mr-2">Cancel</a>
     <button type="submit" name="button" class="btn btn-danger">Delete</button>
   </form>
 {% endblock %}

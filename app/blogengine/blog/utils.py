@@ -78,11 +78,11 @@ class ObjectDeleteMixin:
 
 
 def gen_slug(s):
+    new_slug = slugify(s, allow_unicode=True)
     try:
-        slugifyed_title = slugify(s, allow_unicode=True)
-        new_slug = translit(slugifyed_title, reversed=True)
+        new_slug = translit(new_slug, reversed=True)
     except LanguageDetectionError:
-        new_slug = slugify(s, allow_unicode=True)
+        pass
     return new_slug + '-' + str(int(time()))
 
 
